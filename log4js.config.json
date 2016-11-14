@@ -1,0 +1,19 @@
+{
+    "appenders": [{
+        "type": "dateFile",
+        "filename": "log/msg",
+        "pattern": "-yyyy-MM-dd.log",
+        "category": "logInfo",
+        "alwaysIncludePattern": true
+    }, {
+        "type": "dateFile",
+        "filename": "log/err",
+        "pattern": "-yyyy-MM-dd.log",
+        "category": "logError",
+        "alwaysIncludePattern": true
+    }],
+    "levels": {
+        "logInfo": "DEBUG",
+        "logError": "DEBUG"
+    }
+}
