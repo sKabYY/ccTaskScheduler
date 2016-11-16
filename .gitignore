@@ -2,3 +2,6 @@ local_config.js
 log/*
 .idea
 _local_*
+
+.bin
+electron

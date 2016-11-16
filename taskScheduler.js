@@ -1,10 +1,22 @@
 var cron = require('node-cron');
-var configUtil = require('./configUtil.js');
 var request = require('request');
 
+if (typeof outputLine === 'undefined') {
+    outputLine = console.log;
+}
+
+var configUtil = require('./configUtil.js');
 var logUtil = require('./logUtil.js');
-var info = logUtil.infoLogger;
-var error = logUtil.errorLogger;
+var infoLogger = logUtil.infoLogger;
+var errorLogger = logUtil.errorLogger;
+var info = function () {
+    infoLogger.info.apply(infoLogger, arguments);
+    outputLine.apply(null, arguments);
+};
+var error = function () {
+    errorLogger.info.apply(errorLogger, arguments);
+    outputLine.apply(null, arguments);
+};
 
 var httpGet = function (url) {
     var httpPrefix = 'http://';
@@ -17,22 +29,22 @@ var httpGet = function (url) {
     }, function (err, res, body) {
         var msg = 'HttpGet: ' + url;
         if (err) {
-            error.error(msg);
-            error.error(err);
+            error(msg);
+            error(err);
         } else if (res.statusCode != 200) {
-            error.error(msg);
-            error.error(res);
-            error.error(body);
+            error(msg);
+            error(res);
+            error(body);
         } else {
-            info.info(msg);
-            info.info(body);
+            info(msg);
+            info(body);
         }
     });
 };
 
 var startTask = function (task) {
     var onTick = null;
-    var taskType = task.type || configUtil.get('defaultTaskType');
+    var taskType = task.type;
     if (taskType === 'Function') {
         onTick = task.func;
     } else if (taskType === 'HttpGet') {
@@ -47,7 +59,7 @@ var startTask = function (task) {
             try {
                 onTick();
             } catch (e) {
-                error.error(e);
+                error(e);
             }
         });
     }
@@ -56,6 +68,7 @@ var startTask = function (task) {
 var startAll = function () {
     var tasks = configUtil.get('tasks');
     for (var i = 0; i < tasks.length; ++i) {
+        tasks[i].type = tasks[i].type || configUtil.get('defaultTaskType');
         startTask(tasks[i]);
     }
 };
@@ -74,12 +87,12 @@ var repl = function () {
             var args = words.slice(1);
             switch (cmd) {
                 case 'echo':
-                    console.log(args.join(' '));
+                    outputLine(args.join(' '));
                     break;
                 case '':
                     break;
                 default:
-                    console.log('unknown command: ' + cmd);
+                    outputLine('unknown command: ' + cmd);
                     break;
             }
         }
@@ -88,5 +101,11 @@ var repl = function () {
     rl.prompt();
 };
 
-startAll();
-repl();
+module.exports = {
+    start: function () {
+        startAll();
+    },
+    getTasks: function () {
+        return configUtil.get('tasks');
+    }
+};

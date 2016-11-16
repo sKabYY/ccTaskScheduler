@@ -14,7 +14,9 @@ module.exports = {
         cronTime: '* * * * * *',
         type: 'Function',
         func: function () {
-            logUtil.infoLogger.info(new Date());
+            var now = new Date();
+            logUtil.infoLogger.info(now);
+            outputLine(now);
         }
     }]
 };

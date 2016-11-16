@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Task Scheduler</title>
+    <link rel="stylesheet" href="assets/bootstrap/dist/css/bootstrap-black.css">
+    <script src="./node_modules/vue/dist/vue.js"></script>
+    <style>
+        body {
+            overflow: hidden;
+        }
+        .container {
+            margin: 0;
+            height: 460px;
+        }
+        .dashboard {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app" class="container">
+    <div class="col-sm-6">
+        <table class="table table-condensed dashboard">
+            <thead>
+            <tr>
+                <th>TIME</th>
+                <th>TYPE</th>
+                <th>URL</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="task in tasks">
+                <td>{{ task.cronTime }}</td>
+                <td>{{ task.type }}</td>
+                <td>{{ task.url }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-sm-6" style="height: 100%; padding: 15px;">
+        <pre class="output" style="height: 100%;">{{ outputBuf.slice(0).reverse().join('\n') }}</pre>
+    </div>
+</div>
+</body>
+
+<script>
+    global.jQuery = require('./assets/jquery/jquery.js');
+    require('./assets/bootstrap/dist/js/bootstrap.js');
+    require('./renderer.js');
+</script>
+
+</html>

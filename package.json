@@ -1,0 +1,16 @@
+{
+  "name": "ccTaskScheduler",
+  "version": "1.0.0",
+  "description": "A task scheduler",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^1.4.1",
+    "node-cron": "^1.1.2",
+    "log4js": "^1.0.1",
+    "request": "^2.78.0",
+    "vue": "^2.0.6"
+  }
+}
