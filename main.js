@@ -10,11 +10,10 @@ let toPath = function (fn) {
 
 const url = require('url');
 
-
 let mainWindow;
 let createWindow = function () {
     mainWindow = new BrowserWindow({
-        width: 1120,
+        width: 1000,
         height: 480
     });
     mainWindow.loadURL(url.format({
