@@ -4,7 +4,8 @@
   "description": "A task scheduler",
   "main": "main.js",
   "scripts": {
-    "build": "babel src -d assets/scripts",
+    "build": "babel scripts-src -d assets/scripts",
+    "clean": "rm -r assets/scripts",
     "start": "electron ."
   },
   "dependencies": {

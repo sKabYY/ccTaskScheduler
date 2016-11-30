@@ -1,6 +1,7 @@
 const {
     app,
-    BrowserWindow
+    BrowserWindow,
+    ipcMain
 } = require('electron');
 
 const path = require('path');
@@ -35,4 +36,20 @@ app.on('activate', function () {
     if (mainWindow === null) {
         createWindow();
     }
+});
+
+global.outputLine = function (line) {
+    if (typeof line !== 'string') {
+        line = JSON.stringify(line);
+    }
+    mainWindow.webContents.send('output', line);
+};
+
+const ts = require('./assets/core/taskScheduler.js');
+['getTasks', 'start'].forEach(function (method) {
+    ipcMain.on('ts:' + method, function (event, arg) {
+        var ret = ts[method]();
+        if (ret === undefined) ret = null;
+        event.returnValue = ret;
+    });
 });

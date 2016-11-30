@@ -1,11 +1,6 @@
+const {ipcRenderer} = require('electron');
 var React = require('react');
 var ReactDOM = require('react-dom');
-
-global.outputLine = function (line) {
-    // dummy
-    // TODO: cache log and flush after DOM mounted
-};
-const ts = require('./taskScheduler.js');
 
 var TasksTable = React.createClass({
     render: function () {
@@ -19,7 +14,7 @@ var TasksTable = React.createClass({
             </thead>
             <tbody>
             {
-                ts.getTasks().map(function (task) {
+                ipcRenderer.sendSync('ts:getTasks').map(function (task) {
                     return <tr>
                         <td>{task.cronTime}</td>
                         <td>{task.type}</td>
@@ -35,10 +30,7 @@ var TasksTable = React.createClass({
 const MAX_BUF_NUM = 255;
 var Output = React.createClass({
     getInitialState: function () {
-        return { outputBuf: [] };
-    },
-    componentDidMount: function () {
-        global.outputLine = function (line) {
+        ipcRenderer.on('output', function (event, line) {
             var buf = this.state.outputBuf;
             buf.push(line);
             let len = buf.length;
@@ -46,7 +38,8 @@ var Output = React.createClass({
                 buf.splice(0, len - MAX_BUF_NUM);
             }
             this.setState({ outputBuf: buf });
-        }.bind(this);
+        }.bind(this));
+        return { outputBuf: [] };
     },
     render: function () {
         return <pre className="output">{this.state.outputBuf.slice(0).reverse().join('\n')}</pre>;
@@ -65,4 +58,4 @@ ReactDOM.render(
     document.getElementById('app')
 );
 
-ts.start();
+ipcRenderer.sendSync('ts:start');
