@@ -6,4 +6,6 @@ _local_*
 .bin
 electron
 
-assets/scripts
+node_modules
+assets/*
+!assets/lib

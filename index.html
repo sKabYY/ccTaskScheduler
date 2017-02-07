@@ -19,7 +19,7 @@
             height: 100%;
             padding: 15px;
         }
-        .output {
+        .output-content {
             height: 100%;
             color: #0c0;
         }
@@ -32,9 +32,10 @@
 </body>
 
 <script>
+    global.cc = require('./assets/lib/cc/cc.core.js');
     global.jQuery = require('./assets/lib/jquery/jquery.js');
     require('./assets/lib/bootstrap/dist/js/bootstrap.js');
-    require('./assets/scripts/renderer.js');
+    require('./assets/app.js');
 </script>
 
 </html>

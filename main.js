@@ -1,3 +1,4 @@
+require('./assets/lib/cc/cc.core.js');
 const {
     app,
     BrowserWindow,
@@ -5,14 +6,14 @@ const {
 } = require('electron');
 
 const path = require('path');
-let toPath = function (fn) {
+const toPath = function (fn) {
     return path.join(__dirname, fn);
 };
 
 const url = require('url');
 
 let mainWindow;
-let createWindow = function () {
+const createWindow = function () {
     mainWindow = new BrowserWindow({
         width: 1000,
         height: 480
@@ -38,18 +39,23 @@ app.on('activate', function () {
     }
 });
 
-global.outputLine = function (line) {
-    if (typeof line !== 'string') {
-        line = JSON.stringify(line);
+const TaskScheduler = require('./assets/main/TaskScheduler');
+const ts = new TaskScheduler({
+    output(line) {
+        if (typeof line !== 'string') {
+            line = JSON.stringify(line);
+        }
+        mainWindow.webContents.send('output', line);
     }
-    mainWindow.webContents.send('output', line);
-};
-
-const ts = require('./assets/core/taskScheduler.js');
-['getTasks', 'start'].forEach(function (method) {
-    ipcMain.on('ts:' + method, function (event, arg) {
-        var ret = ts[method]();
+});
+['getTasks', 'startAll', 'execTaskById'].forEach(function (method) {
+    ipcMain.on('ts:' + method, (event, args) => {
+        var ret = ts[method].apply(ts, args);
         if (ret === undefined) ret = null;
         event.returnValue = ret;
     });
+});
+
+app.on('will-quit', () => {
+    ts.release();
 });
