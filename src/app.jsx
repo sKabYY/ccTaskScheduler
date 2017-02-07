@@ -56,6 +56,24 @@ const AppView = React.createClass({
     }
 });
 
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip({
+        placement(tip, element) {
+            var position = $(element).position();
+            if (position.left > 515) {
+                return "left";
+            }
+            if (position.left < 515) {
+                return "right";
+            }
+            if (position.top < 110){
+                return "bottom";
+            }
+            return "top";
+        }
+    });
+});
+
 render(<AppView app={app} />, document.getElementById('app'));
 
 app.startAll();

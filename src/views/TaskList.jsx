@@ -1,4 +1,5 @@
 const React = require('react');
+const prettyCron = require('../lib/prettycron-hack/prettycron');
 
 const TaskList = React.createClass({
     getInitialState: function () {
@@ -9,14 +10,16 @@ const TaskList = React.createClass({
         return { tasks: this.app.getTasks() };
     },
     render() {
+        const guruUrl = "https://crontab.guru";
+        const helpTooltip = guruUrl + "，需要互联网连接";
         return (
             <div>
-                <div>友情链接：<a href="https://crontab.guru/" target="_blank">crontab.guru</a></div>
                 <table className="table table-condensed dashboard">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>TIME</th>
+                            <th>CRON TIME
+                                (<a href={guruUrl} target="_blank" data-toggle="tooltip" title={helpTooltip}>HELP</a>)</th>
                             <th>TYPE</th>
                             <th>URL</th>
                             <th>REMARK</th>
@@ -30,7 +33,7 @@ const TaskList = React.createClass({
                             return (
                                 <tr key={id}>
                                     <td>{idx+1}</td>
-                                    <td>{task.cronTime}</td>
+                                    <td><span data-toggle="tooltip" title={prettyCron.toString(task.cronTime, true)}>{task.cronTime}</span></td>
                                     <td>{task.type}</td>
                                     <td>{task.url}</td>
                                     <td>{task.remark}</td>
